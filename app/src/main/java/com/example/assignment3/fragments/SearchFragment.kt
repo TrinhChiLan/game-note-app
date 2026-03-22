@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +47,10 @@ class SearchFragment : Fragment() {
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        binding.searchInput.doAfterTextChanged { text ->
+            viewModel.onQueryChanged(text?.toString() ?: "")
         }
 
         binding.searchInput.setOnEditorActionListener { v, actionId, event ->

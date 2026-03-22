@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="8dp"
+    app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
@@ -41,19 +42,34 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="Game Name"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Game Name" />
 
             <TextView
                 android:id="@+id/game_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Genre - 2xxx"
                 android:textColor="#757575"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                tools:text="Genre - 2xxx" />
+
+            <TextView
+                android:id="@+id/in_library_pill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_status_playing"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:text="In Library"
+                android:textColor="#22C55E"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

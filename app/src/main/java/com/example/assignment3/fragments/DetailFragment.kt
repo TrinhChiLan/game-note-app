@@ -1,10 +1,12 @@
 package com.example.assignment3.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -26,6 +28,17 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: DetailViewModel by viewModels()
     private val args: DetailFragmentArgs by navArgs()
+
+    private var targetGame: com.example.assignment3.data.GameEntity? = null
+    private var isHeaderImagePicker = false
+
+    private val imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            targetGame?.let { game ->
+                viewModel.updateGameImage(game, it.toString(), isHeaderImagePicker)
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +76,7 @@ class DetailFragment : Fragment() {
         binding.notesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.notesRecyclerView.adapter = notesAdapter
 
-        binding.toolbar.setNavigationOnClickListener {
+        binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
 
@@ -79,16 +92,26 @@ class DetailFragment : Fragment() {
                     }
                     is DetailState.Success -> {
                         val game = state.game
+                        targetGame = game
                         binding.detailGameName.text = game.name
-                        binding.detailImage.load(game.imageUrl)
+
+                        // Use additional image if available, else fallback to main image
+                        val displayImageUrl =  game.imageUrlAdditional ?: game.imageUrl
+                        binding.detailImage.load(displayImageUrl) {
+                            crossfade(true)
+                            placeholder(android.R.drawable.ic_menu_gallery)
+                            error(android.R.drawable.ic_menu_report_image)
+                        }
                         
                         // Favorite button logic
-                        val favoriteIcon = if (game.isFavorite) {
-                            android.R.drawable.btn_star_big_on
+                        if (game.isFavorite) {
+                            binding.favoriteButton.setImageResource(R.drawable.baseline_favorite_24)
+                            binding.favoriteButton.clearColorFilter()
                         } else {
-                            android.R.drawable.btn_star_big_off
+                            binding.favoriteButton.setImageResource(R.drawable.favorite_24_hollow)
+                            binding.favoriteButton.setColorFilter(android.graphics.Color.WHITE, android.graphics.PorterDuff.Mode.SRC_ATOP)
                         }
-                        binding.favoriteButton.setImageResource(favoriteIcon)
+
                         binding.favoriteButton.setOnClickListener {
                             viewModel.toggleFavorite(game)
                         }
@@ -119,14 +142,43 @@ class DetailFragment : Fragment() {
     }
 
     private fun showGameOptionsDialog(game: com.example.assignment3.data.GameEntity) {
-        val favoriteText = if (game.isFavorite) "Unfavorite" else "Favorite"
-        val options = arrayOf(favoriteText, "Remove Game")
+        val favoriteText = if (game.isFavorite) getString(R.string.unfavorite) else getString(R.string.favorite)
+        
+        val optionsList = mutableListOf(
+            favoriteText, 
+            getString(R.string.change_thumbnail),
+            getString(R.string.change_header_image)
+        )
+        
+        // Add remove options only if custom images exist
+        if (game.imageUrl != game.apiImageUrl) {
+            optionsList.add(getString(R.string.remove_thumbnail))
+        }
+        if (game.imageUrlAdditional != null) {
+            optionsList.add(getString(R.string.remove_header_image))
+        }
+        
+        optionsList.add(getString(R.string.remove_game))
+
+        val options = optionsList.toTypedArray()
+
         AlertDialog.Builder(requireContext())
-            .setTitle("Options")
+            .setTitle(R.string.game_options_description)
             .setItems(options) { _, which ->
-                when (which) {
-                    0 -> viewModel.toggleFavorite(game)
-                    1 -> showDeleteGameConfirmation(game)
+                val selectedOption = options[which]
+                when (selectedOption) {
+                    favoriteText -> viewModel.toggleFavorite(game)
+                    getString(R.string.change_thumbnail) -> {
+                        isHeaderImagePicker = false
+                        imagePickerLauncher.launch("image/*")
+                    }
+                    getString(R.string.change_header_image) -> {
+                        isHeaderImagePicker = true
+                        imagePickerLauncher.launch("image/*")
+                    }
+                    getString(R.string.remove_thumbnail) -> viewModel.removeGameImage(game, false)
+                    getString(R.string.remove_header_image) -> viewModel.removeGameImage(game, true)
+                    getString(R.string.remove_game) -> showDeleteGameConfirmation(game)
                 }
             }
             .show()
@@ -147,13 +199,13 @@ class DetailFragment : Fragment() {
 
     private fun showDeleteGameConfirmation(game: com.example.assignment3.data.GameEntity) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Remove Game")
-            .setMessage("Are you sure you want to remove this game from your notes?")
-            .setPositiveButton("Remove") { _, _ ->
+            .setTitle(R.string.remove_game)
+            .setMessage(getString(R.string.remove_game_confirm_message, game.name))
+            .setPositiveButton(R.string.remove) { _, _ ->
                 viewModel.deleteGame(game)
                 findNavController().popBackStack()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
@@ -164,14 +216,14 @@ class DetailFragment : Fragment() {
             .setPositiveButton("Delete") { _, _ ->
                 viewModel.deleteNote(note)
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(R.string.cancel, null)
             .show()
     }
 
     private fun showAddNoteTypeDialog() {
-        val types = arrayOf("Text Note", "Checklist")
+        val types = arrayOf(getString(R.string.text_note_chip), getString(R.string.checklist_note_chip))
         AlertDialog.Builder(requireContext())
-            .setTitle("Add Note")
+            .setTitle(R.string.add_note)
             .setItems(types) { _, which ->
                 when (which) {
                     0 -> { // Text Note
@@ -213,7 +265,7 @@ class DetailFragment : Fragment() {
 
         when (status) {
             "PLAYING" -> {
-                binding.detailStatusChip.text = "Playing"
+                binding.detailStatusChip.text = getString(R.string.playing)
                 binding.detailStatusChip.setBackgroundResource(R.drawable.bg_status_playing)
                 binding.detailStatusChip.setTextColor(android.graphics.Color.parseColor("#22C55E"))
             }
@@ -236,7 +288,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun showStatusSelectionDialog(game: com.example.assignment3.data.GameEntity) {
-        val statuses = arrayOf("Playing", "Want to play", "Finished", "None")
+        val statuses = arrayOf(getString(R.string.playing), "Want to play", "Finished", "None")
         val statusValues = arrayOf("PLAYING", "WANT_TO_PLAY", "FINISHED", "NONE")
         
         AlertDialog.Builder(requireContext())

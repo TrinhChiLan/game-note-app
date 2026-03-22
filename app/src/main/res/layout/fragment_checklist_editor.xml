@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
-            app:title="Edit Checklist" />
+            app:title="@string/edit_checklist_title" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:hint="Title (Optional)"
+        android:hint="@string/note_title_hint"
         android:inputType="textCapSentences"
         android:maxLines="2"
         android:minHeight="48dp"
@@ -62,7 +62,7 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+ Add Item"
+                android:text="@string/add_item"
                 android:textColor="@android:color/black" />
 
         </LinearLayout>
@@ -73,7 +73,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Save Checklist"
+        android:text="@string/save_checklist"
         app:icon="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

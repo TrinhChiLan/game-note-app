@@ -88,7 +88,6 @@ class HomeAdapter(
         fun bind(game: GameEntity, onGameClick: (GameEntity) -> Unit, onGameLongClick: (GameEntity) -> Unit) {
             binding.gameName.text = game.name
             
-            // In main screen, use dot icon inside the pill
             when (game.status) {
                 "PLAYING" -> {
                     binding.statusChip.visibility = View.VISIBLE
@@ -119,7 +118,13 @@ class HomeAdapter(
                 }
             }
 
-            binding.gameImage.load(game.imageUrl)
+            // Consistently use the primary image (main background)
+            binding.gameImage.load(game.imageUrl) {
+                crossfade(true)
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
+
             binding.root.setOnClickListener { onGameClick(game) }
             binding.root.setOnLongClickListener {
                 onGameLongClick(game)

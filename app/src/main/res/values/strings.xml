@@ -1,3 +1,44 @@
 <resources>
-    <string name="app_name">Assignment3</string>
+    <string name="app_name">Game Note App</string>
+
+    <!-- Home Screen -->
+    <string name="add_game">Add game</string>
+    <string name="playing">Playing</string>
+    <string name="notes_label">Notes</string>
+    <string name="add_note">Add note</string>
+    <string name="unfavorite">Unfavorite</string>
+    <string name="favorite">Favorite</string>
+    <string name="remove_game">Remove Game</string>
+    <string name="remove_game_confirm_message">Are you sure you want to remove %1$s?</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
+    <string name="change_thumbnail">Change Thumbnail</string>
+    <string name="change_header_image">Change Header Image</string>
+    <string name="remove_thumbnail">Remove Thumbnail</string>
+    <string name="remove_header_image">Remove Header Image</string>
+
+    <!-- Search Screen -->
+    <string name="add_game_title">Add Game</string>
+    <string name="search_games_hint">Search games...</string>
+    <string name="game_added_message">%1$s added!</string>
+
+    <!-- Detail Screen -->
+    <string name="game_cover_description">Game cover</string>
+    <string name="favorite_game_description">Favorite game</string>
+    <string name="game_options_description">Game options</string>
+
+    <!-- Note Editor -->
+    <string name="edit_note_title">Edit Note</string>
+    <string name="note_title_hint">Title (Optional)</string>
+    <string name="note_content_hint">Note content</string>
+    <string name="text_note_chip">Text</string>
+    <string name="checklist_note_chip">List</string>
+    <string name="save_note">Save Note</string>
+    <string name="note_saved_message">Note saved!</string>
+    <string name="empty_note_error">Note content cannot be empty</string>
+
+    <!-- Checklist Editor -->
+    <string name="edit_checklist_title">Edit Checklist</string>
+    <string name="add_item">+ Add Item</string>
+    <string name="save_checklist">Save Checklist</string>
 </resources>

@@ -1,11 +1,14 @@
 package com.example.assignment3.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignment3.data.AppDatabase
 import com.example.assignment3.data.GameEntity
 import com.example.assignment3.data.NoteEntity
+import com.example.assignment3.data.ImageStorageManager
+import com.example.assignment3.network.NetworkClient
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,6 +58,12 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
 
     fun deleteGame(game: GameEntity) {
         viewModelScope.launch {
+            if (game.imageUrl.startsWith("/")) {
+                ImageStorageManager.deleteImageFromInternalStorage(game.imageUrl)
+            }
+            if (game.imageUrlAdditional?.startsWith("/") == true) {
+                ImageStorageManager.deleteImageFromInternalStorage(game.imageUrlAdditional)
+            }
             gameDao.deleteGame(game)
         }
     }
@@ -69,6 +78,45 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     fun deleteNote(note: NoteEntity) {
         viewModelScope.launch {
             gameDao.deleteNote(note)
+        }
+    }
+
+    fun updateGameImage(game: GameEntity, uriString: String, isHeader: Boolean) {
+        viewModelScope.launch {
+            val context = getApplication<Application>().applicationContext
+            val savedPath = ImageStorageManager.saveImageToInternalStorage(context, Uri.parse(uriString))
+            
+            if (savedPath != null) {
+                val updatedGame = if (isHeader) {
+                    if (game.imageUrlAdditional?.startsWith("/") == true) {
+                        ImageStorageManager.deleteImageFromInternalStorage(game.imageUrlAdditional)
+                    }
+                    game.copy(imageUrlAdditional = savedPath)
+                } else {
+                    if (game.imageUrl.startsWith("/")) {
+                        ImageStorageManager.deleteImageFromInternalStorage(game.imageUrl)
+                    }
+                    game.copy(imageUrl = savedPath)
+                }
+                gameDao.updateGame(updatedGame)
+            }
+        }
+    }
+
+    fun removeGameImage(game: GameEntity, isHeader: Boolean) {
+        viewModelScope.launch {
+            val updatedGame = if (isHeader) {
+                if (game.imageUrlAdditional?.startsWith("/") == true) {
+                    ImageStorageManager.deleteImageFromInternalStorage(game.imageUrlAdditional)
+                }
+                game.copy(imageUrlAdditional = null)
+            } else {
+                if (game.imageUrl.startsWith("/")) {
+                    ImageStorageManager.deleteImageFromInternalStorage(game.imageUrl)
+                }
+                game.copy(imageUrl = game.apiImageUrl)
+            }
+            gameDao.updateGame(updatedGame)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.assignment3.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -10,7 +11,7 @@ import com.example.assignment3.network.RawgGame
 import com.example.assignment3.databinding.ItemGameSearchBinding
 
 class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
-    ListAdapter<RawgGame, SearchAdapter.SearchViewHolder>(SearchDiffCallback()) {
+    ListAdapter<Pair<RawgGame, Boolean>, SearchAdapter.SearchViewHolder>(SearchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = ItemGameSearchBinding.inflate(
@@ -22,16 +23,16 @@ class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        holder.bind(getItem(position), onGameClick)
+        val (game, isInLibrary) = getItem(position)
+        holder.bind(game, isInLibrary, onGameClick)
     }
 
     class SearchViewHolder(private val binding: ItemGameSearchBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(game: RawgGame, onGameClick: (RawgGame) -> Unit) {
+        fun bind(game: RawgGame, isInLibrary: Boolean, onGameClick: (RawgGame) -> Unit) {
             binding.gameName.text = game.name
             
-            // Format: Genre - Year (e.g., Action - 2023)
             val genre = game.genres?.firstOrNull()?.name ?: "Unknown"
             val year = game.released?.take(4) ?: "xxxx"
             binding.gameInfo.text = "$genre - $year"
@@ -42,16 +43,22 @@ class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
                 error(android.R.drawable.ic_menu_report_image)
             }
             
-            binding.root.setOnClickListener { onGameClick(game) }
+            binding.inLibraryPill.visibility = if (isInLibrary) View.VISIBLE else View.GONE
+            
+            binding.root.setOnClickListener { 
+                if (!isInLibrary) {
+                    onGameClick(game)
+                }
+            }
         }
     }
 
-    private class SearchDiffCallback : DiffUtil.ItemCallback<RawgGame>() {
-        override fun areItemsTheSame(oldItem: RawgGame, newItem: RawgGame): Boolean {
-            return oldItem.id == newItem.id
+    private class SearchDiffCallback : DiffUtil.ItemCallback<Pair<RawgGame, Boolean>>() {
+        override fun areItemsTheSame(oldItem: Pair<RawgGame, Boolean>, newItem: Pair<RawgGame, Boolean>): Boolean {
+            return oldItem.first.id == newItem.first.id
         }
 
-        override fun areContentsTheSame(oldItem: RawgGame, newItem: RawgGame): Boolean {
+        override fun areContentsTheSame(oldItem: Pair<RawgGame, Boolean>, newItem: Pair<RawgGame, Boolean>): Boolean {
             return oldItem == newItem
         }
     }

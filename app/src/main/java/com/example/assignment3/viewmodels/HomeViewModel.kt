@@ -1,11 +1,13 @@
 package com.example.assignment3.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignment3.adapters.HomeItem
 import com.example.assignment3.data.AppDatabase
 import com.example.assignment3.data.GameEntity
+import com.example.assignment3.data.ImageStorageManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -53,6 +55,12 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     fun deleteGame(game: GameEntity) {
         viewModelScope.launch {
+            if (game.imageUrl.startsWith("/")) {
+                ImageStorageManager.deleteImageFromInternalStorage(game.imageUrl)
+            }
+            if (game.imageUrlAdditional?.startsWith("/") == true) {
+                ImageStorageManager.deleteImageFromInternalStorage(game.imageUrlAdditional)
+            }
             gameDao.deleteGame(game)
         }
     }
@@ -60,6 +68,28 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun toggleFavorite(game: GameEntity) {
         viewModelScope.launch {
             gameDao.updateGame(game.copy(isFavorite = !game.isFavorite))
+        }
+    }
+
+    fun updateGameImage(game: GameEntity, uriString: String, isHeader: Boolean) {
+        viewModelScope.launch {
+            val context = getApplication<Application>().applicationContext
+            val savedPath = ImageStorageManager.saveImageToInternalStorage(context, Uri.parse(uriString))
+            
+            if (savedPath != null) {
+                val updatedGame = if (isHeader) {
+                    if (game.imageUrlAdditional?.startsWith("/") == true) {
+                        ImageStorageManager.deleteImageFromInternalStorage(game.imageUrlAdditional)
+                    }
+                    game.copy(imageUrlAdditional = savedPath)
+                } else {
+                    if (game.imageUrl.startsWith("/")) {
+                        ImageStorageManager.deleteImageFromInternalStorage(game.imageUrl)
+                    }
+                    game.copy(imageUrl = savedPath)
+                }
+                gameDao.updateGame(updatedGame)
+            }
         }
     }
 }

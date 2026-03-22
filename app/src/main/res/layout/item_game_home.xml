@@ -34,7 +34,7 @@
             android:layout_marginEnd="8dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:text="Playing"
+            android:text="@string/playing"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,14 +47,14 @@
             android:layout_marginHorizontal="16dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="Game Name"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/game_image"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Game Name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

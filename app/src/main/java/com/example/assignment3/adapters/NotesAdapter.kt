@@ -1,5 +1,6 @@
 package com.example.assignment3.adapters
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -85,6 +86,19 @@ class NotesAdapter(
                     this.isEnabled = true
                     this.isClickable = false
                     this.setTextColor(Color.BLACK)
+                    
+                    // Set color for the checkbox tint to make it more visible
+                    val colorStateList = ColorStateList(
+                        arrayOf(
+                            intArrayOf(android.R.attr.state_checked),
+                            intArrayOf(-android.R.attr.state_checked)
+                        ),
+                        intArrayOf(
+                            Color.parseColor("#2ECC71"), // Green when checked
+                            Color.GRAY // Gray when unchecked
+                        )
+                    )
+                    this.buttonTintList = colorStateList
                 }
                 binding.checklistItemsContainer.addView(checkBox)
             }

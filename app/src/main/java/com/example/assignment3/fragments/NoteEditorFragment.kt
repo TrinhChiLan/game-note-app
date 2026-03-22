@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -23,7 +24,8 @@ class NoteEditorFragment : Fragment() {
     private val viewModel: NoteEditorViewModel by viewModels()
     private val args: NoteEditorFragmentArgs by navArgs()
 
-    private var selectedNoteType: String = "TEXT" // Default to text note
+    // Always TEXT in this fragment now
+    private val selectedNoteType: String = "TEXT"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,9 +40,9 @@ class NoteEditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setupNoteTypeChips()
         setupSaveButton()
         observeViewModel()
+        setupBackNavigation()
 
         // Load existing note or prepare for new note
         viewModel.loadNote(args.noteId)
@@ -48,35 +50,45 @@ class NoteEditorFragment : Fragment() {
 
     private fun setupToolbar() {
         binding.toolbarNoteEditor.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            handleBackNavigation()
         }
-    }
-
-    private fun setupNoteTypeChips() {
-        binding.noteTypeChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            val chipId = checkedIds.firstOrNull()
-            selectedNoteType = when (chipId) {
-                R.id.chip_text_note -> "TEXT"
-                R.id.chip_checklist_note -> "CHECKLIST"
-                else -> "TEXT"
-            }
-        }
-        // Set initial checked state
-        binding.chipTextNote.isChecked = true
     }
 
     private fun setupSaveButton() {
         binding.saveNoteFab.setOnClickListener {
-            val title = binding.editNoteTitle.text.toString().trim()
-            val content = binding.editNoteContent.text.toString().trim()
-
-            if (content.isEmpty()) {
-                Toast.makeText(requireContext(), "Note content cannot be empty", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            viewModel.saveNote(args.gameId, title, content, selectedNoteType)
+            performSave()
         }
+    }
+
+    private fun setupBackNavigation() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackNavigation()
+            }
+        })
+    }
+
+    private fun handleBackNavigation() {
+        val content = binding.editNoteContent.text.toString().trim()
+        if (content.isNotEmpty()) {
+            performSave()
+        } else {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun performSave() {
+        val title = binding.editNoteTitle.text.toString().trim()
+        val content = binding.editNoteContent.text.toString().trim()
+
+        if (content.isEmpty()) {
+            if (findNavController().currentDestination?.id == R.id.noteEditorFragment) {
+                findNavController().popBackStack()
+            }
+            return
+        }
+
+        viewModel.saveNote(args.gameId, title, content, selectedNoteType)
     }
 
     private fun observeViewModel() {
@@ -90,15 +102,11 @@ class NoteEditorFragment : Fragment() {
                         state.note?.let { note ->
                             binding.editNoteTitle.setText(note.title)
                             binding.editNoteContent.setText(note.content)
-                            selectedNoteType = note.type
-                            when (note.type) {
-                                "TEXT" -> binding.chipTextNote.isChecked = true
-                                "CHECKLIST" -> binding.chipChecklistNote.isChecked = true
-                            }
+                            // Note: We don't change type here as this editor is strictly for TEXT notes now
                         }
                     }
                     is NoteEditorState.Saved -> {
-                        Toast.makeText(requireContext(), "Note saved!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.note_saved_message), Toast.LENGTH_SHORT).show()
                         findNavController().popBackStack()
                     }
                     is NoteEditorState.Error -> {

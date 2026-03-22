@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 data class GameEntity(
     @PrimaryKey val id: Int, // From RAWG API
     val name: String,
-    val imageUrl: String,
+    val imageUrl: String, // Current thumbnail (API or Custom)
+    val apiImageUrl: String, // Original API thumbnail for fallback
+    val imageUrlAdditional: String? = null, // Custom header image
     val releaseDate: String?,
     val genres: String?,
     val status: String, // "PLAYING", "WANT_TO_PLAY", "FINISHED", "NONE"
