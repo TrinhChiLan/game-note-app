@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.assignment3.data.NoteEntity
 import com.example.assignment3.databinding.ItemNoteChecklistBinding
 import com.example.assignment3.databinding.ItemNoteTextBinding
+import androidx.core.graphics.toColorInt
 
 class NotesAdapter(
     private val onNoteClick: (NoteEntity) -> Unit,
@@ -94,7 +95,7 @@ class NotesAdapter(
                             intArrayOf(-android.R.attr.state_checked)
                         ),
                         intArrayOf(
-                            Color.parseColor("#2ECC71"), // Green when checked
+                            "#2ECC71".toColorInt(), // Green when checked
                             Color.GRAY // Gray when unchecked
                         )
                     )

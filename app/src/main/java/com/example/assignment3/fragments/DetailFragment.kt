@@ -21,6 +21,7 @@ import com.example.assignment3.databinding.FragmentDetailBinding
 import com.example.assignment3.viewmodels.DetailState
 import com.example.assignment3.viewmodels.DetailViewModel
 import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
 
 class DetailFragment : Fragment() {
 
@@ -252,9 +253,9 @@ class DetailFragment : Fragment() {
             val size = (14 * resources.displayMetrics.density).toInt()
             setBounds(0, 0, size, size)
             val color = when (status) {
-                "PLAYING" -> android.graphics.Color.parseColor("#22C55E")
-                "WANT_TO_PLAY" -> android.graphics.Color.parseColor("#8B5CF6")
-                "FINISHED" -> android.graphics.Color.parseColor("#EAB308")
+                "PLAYING" -> "#22C55E".toColorInt()
+                "WANT_TO_PLAY" -> "#8B5CF6".toColorInt()
+                "FINISHED" -> "#EAB308".toColorInt()
                 else -> android.graphics.Color.GRAY
             }
             androidx.core.graphics.drawable.DrawableCompat.setTint(this, color)
@@ -267,20 +268,20 @@ class DetailFragment : Fragment() {
             "PLAYING" -> {
                 binding.detailStatusChip.text = getString(R.string.playing)
                 binding.detailStatusChip.setBackgroundResource(R.drawable.bg_status_playing)
-                binding.detailStatusChip.setTextColor(android.graphics.Color.parseColor("#22C55E"))
+                binding.detailStatusChip.setTextColor("#22C55E".toColorInt())
             }
             "WANT_TO_PLAY" -> {
-                binding.detailStatusChip.text = "Want to play"
+                binding.detailStatusChip.text = getString(R.string.want_to_play)
                 binding.detailStatusChip.setBackgroundResource(R.drawable.bg_status_want_to_play)
-                binding.detailStatusChip.setTextColor(android.graphics.Color.parseColor("#8B5CF6"))
+                binding.detailStatusChip.setTextColor("#8B5CF6".toColorInt())
             }
             "FINISHED" -> {
-                binding.detailStatusChip.text = "Finished"
+                binding.detailStatusChip.text = getString(R.string.finished)
                 binding.detailStatusChip.setBackgroundResource(R.drawable.bg_status_finished)
-                binding.detailStatusChip.setTextColor(android.graphics.Color.parseColor("#EAB308"))
+                binding.detailStatusChip.setTextColor("#EAB308".toColorInt())
             }
             else -> {
-                binding.detailStatusChip.text = "Add a status"
+                binding.detailStatusChip.text = getString(R.string.add_status)
                 binding.detailStatusChip.setBackgroundResource(R.drawable.bg_status_none)
                 binding.detailStatusChip.setTextColor(android.graphics.Color.GRAY)
             }

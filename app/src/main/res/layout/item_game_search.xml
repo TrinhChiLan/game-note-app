@@ -64,7 +64,7 @@
                 android:background="@drawable/bg_status_playing"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="In Library"
+                android:text="@string/in_library"
                 android:textColor="#22C55E"
                 android:textSize="12sp"
                 android:textStyle="bold"

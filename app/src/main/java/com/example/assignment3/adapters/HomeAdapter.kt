@@ -14,6 +14,7 @@ import com.example.assignment3.data.GameEntity
 import com.example.assignment3.databinding.ItemGameHomeBinding
 import com.example.assignment3.databinding.ItemHeaderBinding
 import com.example.assignment3.databinding.ItemSearchBarBinding
+import androidx.core.graphics.toColorInt
 
 sealed class HomeItem {
     object SearchBar : HomeItem()
@@ -93,7 +94,7 @@ class HomeAdapter(
                     binding.statusChip.visibility = View.VISIBLE
                     binding.statusChip.text = "Playing"
                     binding.statusChip.setBackgroundResource(R.drawable.bg_status_playing)
-                    binding.statusChip.setTextColor(android.graphics.Color.parseColor("#22C55E"))
+                    binding.statusChip.setTextColor("#22C55E".toColorInt())
                     binding.statusChip.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_status_dot_green, 0, 0, 0)
                     binding.statusChip.compoundDrawablePadding = 8
                 }
@@ -101,7 +102,7 @@ class HomeAdapter(
                     binding.statusChip.visibility = View.VISIBLE
                     binding.statusChip.text = "Want to play"
                     binding.statusChip.setBackgroundResource(R.drawable.bg_status_want_to_play)
-                    binding.statusChip.setTextColor(android.graphics.Color.parseColor("#8B5CF6"))
+                    binding.statusChip.setTextColor("#8B5CF6".toColorInt())
                     binding.statusChip.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_status_dot_purple, 0, 0, 0)
                     binding.statusChip.compoundDrawablePadding = 8
                 }
@@ -109,7 +110,7 @@ class HomeAdapter(
                     binding.statusChip.visibility = View.VISIBLE
                     binding.statusChip.text = "Finished"
                     binding.statusChip.setBackgroundResource(R.drawable.bg_status_finished)
-                    binding.statusChip.setTextColor(android.graphics.Color.parseColor("#EAB308"))
+                    binding.statusChip.setTextColor("#EAB308".toColorInt())
                     binding.statusChip.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_status_dot_yellow, 0, 0, 0)
                     binding.statusChip.compoundDrawablePadding = 8
                 }

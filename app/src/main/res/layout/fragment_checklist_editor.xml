@@ -17,7 +17,7 @@
             android:id="@+id/toolbar_checklist_editor"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@android:drawable/ic_menu_close_clear_cancel"
+            app:navigationIcon="@drawable/arrow_back"
             app:title="@string/edit_checklist_title" />
 
     </com.google.android.material.appbar.AppBarLayout>

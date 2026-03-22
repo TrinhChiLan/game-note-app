@@ -4,6 +4,9 @@
     <!-- Home Screen -->
     <string name="add_game">Add game</string>
     <string name="playing">Playing</string>
+    <string name="want_to_play">Want to play</string>
+    <string name="finished">Finished</string>
+    <string name="add_status">Add a status</string>
     <string name="notes_label">Notes</string>
     <string name="add_note">Add note</string>
     <string name="unfavorite">Unfavorite</string>
@@ -21,6 +24,7 @@
     <string name="add_game_title">Add Game</string>
     <string name="search_games_hint">Search games...</string>
     <string name="game_added_message">%1$s added!</string>
+    <string name="in_library">In Library</string>
 
     <!-- Detail Screen -->
     <string name="game_cover_description">Game cover</string>
