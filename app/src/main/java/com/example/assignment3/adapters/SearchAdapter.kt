@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.example.assignment3.R
 import com.example.assignment3.network.RawgGame
 import com.example.assignment3.databinding.ItemGameSearchBinding
 
@@ -39,7 +40,7 @@ class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
             
             binding.gameImage.load(game.backgroundImage) {
                 crossfade(true)
-                placeholder(android.R.drawable.ic_menu_gallery)
+                placeholder(R.drawable.placeholder)
                 error(android.R.drawable.ic_menu_report_image)
             }
             

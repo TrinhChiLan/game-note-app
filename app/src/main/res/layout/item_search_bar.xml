@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    app:cardBackgroundColor="#F5F5F5"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="8dp"
-    app:cardElevation="0dp"
+    app:cardElevation="1dp"
     app:strokeWidth="0dp">
 
     <LinearLayout
@@ -32,7 +32,7 @@
             android:background="@null"
             android:hint="@string/search_games_hint"
             android:inputType="text"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textColorHint="#757575"
             android:textSize="16sp" />
 

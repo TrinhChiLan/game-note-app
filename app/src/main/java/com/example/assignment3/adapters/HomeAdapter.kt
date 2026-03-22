@@ -122,7 +122,7 @@ class HomeAdapter(
             // Consistently use the primary image (main background)
             binding.gameImage.load(game.imageUrl) {
                 crossfade(true)
-                placeholder(android.R.drawable.ic_menu_gallery)
+                placeholder(R.drawable.placeholder)
                 error(android.R.drawable.ic_menu_report_image)
             }
 

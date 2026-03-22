@@ -38,7 +38,20 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_searchFragment_to_addCustomGameFragment"
+            app:destination="@id/addCustomGameFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
+    <fragment
+        android:id="@+id/addCustomGameFragment"
+        android:name="com.example.assignment3.fragments.AddCustomGameFragment"
+        android:label="Add Custom Game"
+        tools:layout="@layout/fragment_add_custom_game" />
 
     <fragment
         android:id="@+id/detailFragment"

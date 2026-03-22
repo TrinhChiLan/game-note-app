@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.assignment3.R
 import com.example.assignment3.adapters.SearchAdapter
 import com.example.assignment3.databinding.FragmentSearchBinding
 import com.example.assignment3.viewmodels.SearchState
@@ -38,7 +39,7 @@ class SearchFragment : Fragment() {
 
         val adapter = SearchAdapter { clickedGame ->
             viewModel.saveGame(clickedGame)
-            Toast.makeText(requireContext(), "${clickedGame.name} added!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.game_added_message, clickedGame.name), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
 
@@ -60,6 +61,10 @@ class SearchFragment : Fragment() {
             } else {
                 false
             }
+        }
+
+        binding.addCustomGameButton.setOnClickListener {
+            findNavController().navigate(R.id.action_searchFragment_to_addCustomGameFragment)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

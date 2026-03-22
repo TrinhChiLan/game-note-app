@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark Mode Palette -->
+    <color name="primary">#FFFFFF</color>
+    <color name="onPrimary">#000000</color>
+    <color name="background">#121212</color>
+    <color name="onBackground">#FFFFFF</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="onSurface">#FFFFFF</color>
+    <color name="surfaceVariant">#2C2C2C</color>
+    <color name="onSurfaceVariant">#B0B0B0</color>
+    <color name="outline">#333333</color>
+</resources>

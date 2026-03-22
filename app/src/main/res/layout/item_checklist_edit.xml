@@ -21,7 +21,7 @@
         android:hint="List item"
         android:inputType="textCapSentences"
         android:padding="8dp"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textColorHint="#757575"
         android:textSize="16sp" />
 

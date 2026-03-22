@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="@color/background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_note_editor"
@@ -32,7 +32,7 @@
         android:inputType="textCapSentences"
         android:maxLines="2"
         android:minHeight="48dp"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
         android:gravity="top"
         android:hint="@string/note_content_hint"
         android:inputType="textMultiLine|textCapSentences"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/save_note_fab"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/save_note"
+        android:textColor="@color/black"
         app:icon="@android:drawable/ic_menu_save"
+        app:iconTint="@color/black"
+        app:backgroundTint="@color/app_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

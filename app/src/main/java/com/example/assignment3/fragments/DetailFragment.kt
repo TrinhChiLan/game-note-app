@@ -100,7 +100,7 @@ class DetailFragment : Fragment() {
                         val displayImageUrl =  game.imageUrlAdditional ?: game.imageUrl
                         binding.detailImage.load(displayImageUrl) {
                             crossfade(true)
-                            placeholder(android.R.drawable.ic_menu_gallery)
+                            placeholder(R.drawable.placeholder)
                             error(android.R.drawable.ic_menu_report_image)
                         }
                         

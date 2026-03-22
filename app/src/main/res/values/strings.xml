@@ -25,6 +25,16 @@
     <string name="search_games_hint">Search games...</string>
     <string name="game_added_message">%1$s added!</string>
     <string name="in_library">In Library</string>
+    <string name="add_custom_game">Add Custom Game</string>
+
+    <!-- Custom Game Screen -->
+    <string name="custom_game_title">Add Custom Game</string>
+    <string name="game_name_hint">Game Name</string>
+    <string name="thumbnail_label">Thumbnail</string>
+    <string name="header_label">Header Image</string>
+    <string name="select_image">Select Image</string>
+    <string name="save_custom_game">Save Game</string>
+    <string name="error_empty_name">Please enter a game name</string>
 
     <!-- Detail Screen -->
     <string name="game_cover_description">Game cover</string>

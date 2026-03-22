@@ -2,4 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Light Mode Palette -->
+    <color name="primary">#000000</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="background">#FFFFFF</color>
+    <color name="onBackground">#000000</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#000000</color>
+    <color name="surfaceVariant">#FAFAFA</color>
+    <color name="onSurfaceVariant">#757575</color>
+    <color name="outline">#DDDDDD</color>
+    <color name="app_blue">#98E4FF</color>
 </resources>
