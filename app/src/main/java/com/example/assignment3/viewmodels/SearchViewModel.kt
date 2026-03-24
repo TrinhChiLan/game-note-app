@@ -60,6 +60,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
             return
         }
 
+        _isLoading.value = true
         searchJob = viewModelScope.launch {
             delay(500)
             performSearch(query)
@@ -68,6 +69,7 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     fun searchGames(query: String) {
         searchJob?.cancel()
+        _isLoading.value = true
         searchJob = viewModelScope.launch {
             performSearch(query)
         }

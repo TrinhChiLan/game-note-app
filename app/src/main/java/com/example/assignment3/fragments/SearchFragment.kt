@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -69,9 +70,11 @@ class SearchFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.searchState.collect { state ->
+                binding.loadingLayout.isVisible = state is SearchState.Loading
+                
                 when (state) {
                     is SearchState.Loading -> {
-                        // Show progress bar if you have one
+                        // UI handled by binding.loadingLayout.isVisible
                     }
                     is SearchState.Success -> {
                         adapter.submitList(state.games)
