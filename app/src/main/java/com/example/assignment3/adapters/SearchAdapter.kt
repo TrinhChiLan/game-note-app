@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.example.assignment3.R
-import com.example.assignment3.network.RawgGame
+import com.example.assignment3.network.SteamGame
 import com.example.assignment3.databinding.ItemGameSearchBinding
 
-class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
-    ListAdapter<Pair<RawgGame, Boolean>, SearchAdapter.SearchViewHolder>(SearchDiffCallback()) {
+class SearchAdapter(private val onGameClick: (SteamGame) -> Unit) :
+    ListAdapter<Pair<SteamGame, Boolean>, SearchAdapter.SearchViewHolder>(SearchDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
         val binding = ItemGameSearchBinding.inflate(
@@ -31,14 +31,12 @@ class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
     class SearchViewHolder(private val binding: ItemGameSearchBinding) :
         RecyclerView.ViewHolder(binding.root) {
         
-        fun bind(game: RawgGame, isInLibrary: Boolean, onGameClick: (RawgGame) -> Unit) {
+        fun bind(game: SteamGame, isInLibrary: Boolean, onGameClick: (SteamGame) -> Unit) {
             binding.gameName.text = game.name
             
-            val genre = game.genres?.firstOrNull()?.name ?: "Unknown"
-            val year = game.released?.take(4) ?: "xxxx"
-            binding.gameInfo.text = "$genre - $year"
+            binding.gameInfo.text = "Steam Game"
             
-            binding.gameImage.load(game.backgroundImage) {
+            binding.gameImage.load(game.headerImage) {
                 crossfade(true)
                 placeholder(R.drawable.placeholder)
                 error(android.R.drawable.ic_menu_report_image)
@@ -54,12 +52,12 @@ class SearchAdapter(private val onGameClick: (RawgGame) -> Unit) :
         }
     }
 
-    private class SearchDiffCallback : DiffUtil.ItemCallback<Pair<RawgGame, Boolean>>() {
-        override fun areItemsTheSame(oldItem: Pair<RawgGame, Boolean>, newItem: Pair<RawgGame, Boolean>): Boolean {
+    private class SearchDiffCallback : DiffUtil.ItemCallback<Pair<SteamGame, Boolean>>() {
+        override fun areItemsTheSame(oldItem: Pair<SteamGame, Boolean>, newItem: Pair<SteamGame, Boolean>): Boolean {
             return oldItem.first.id == newItem.first.id
         }
 
-        override fun areContentsTheSame(oldItem: Pair<RawgGame, Boolean>, newItem: Pair<RawgGame, Boolean>): Boolean {
+        override fun areContentsTheSame(oldItem: Pair<SteamGame, Boolean>, newItem: Pair<SteamGame, Boolean>): Boolean {
             return oldItem == newItem
         }
     }

@@ -98,7 +98,7 @@ class NotesAdapter(
                     this.isChecked = isChecked
                     this.isEnabled = true
                     this.isClickable = false
-                                                                                                                                                    this.setTextColor(onSurfaceColor)
+                    this.setTextColor(onSurfaceColor)
                     
                     // Set color for the checkbox tint to make it more visible
                     val colorStateList = ColorStateList(

@@ -1,12 +1,13 @@
 package com.example.assignment3.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.assignment3.data.AppDatabase
 import com.example.assignment3.data.GameEntity
 import com.example.assignment3.network.NetworkClient
-import com.example.assignment3.network.RawgGame
+import com.example.assignment3.network.SteamGame
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -17,7 +18,7 @@ import retrofit2.HttpException
 sealed class SearchState {
     object Idle : SearchState()
     object Loading : SearchState()
-    data class Success(val games: List<Pair<RawgGame, Boolean>>) : SearchState()
+    data class Success(val games: List<Pair<SteamGame, Boolean>>) : SearchState()
     data class Error(val message: String) : SearchState()
 }
 
@@ -25,11 +26,10 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
 
     private val gameDao = AppDatabase.getDatabase(application).gameDao()
     
-    private val _rawResults = MutableStateFlow<List<RawgGame>>(emptyList())
+    private val _rawResults = MutableStateFlow<List<SteamGame>>(emptyList())
     private val _isLoading = MutableStateFlow(false)
     private val _error = MutableStateFlow<String?>(null)
 
-    private val API_KEY = "a86a6853a1eb4ce6aa8fd1b4e0ff4b44"
     private var searchJob: Job? = null
 
     // Reactively derive the search state from all inputs
@@ -79,8 +79,8 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         _isLoading.value = true
         _error.value = null
         try {
-            val response = NetworkClient.apiService.searchGames(API_KEY, query)
-            _rawResults.value = response.results
+            val response = NetworkClient.steamApiService.searchGames(query)
+            _rawResults.value = response.items
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {
@@ -97,25 +97,51 @@ class SearchViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun saveGame(rawgGame: RawgGame) {
+    fun saveGame(steamGame: SteamGame) {
         viewModelScope.launch {
-            val existing = gameDao.getGameById(rawgGame.id)
+            val existing = gameDao.getGameById(steamGame.id)
             if (existing != null) return@launch
 
-            val genre = rawgGame.genres?.firstOrNull()?.name ?: "Unknown"
-            val year = rawgGame.released?.take(4) ?: "xxxx"
+            try {
+                Log.d("Fetch", "Success.")
+                // fetch more details including genres, release date, and official images
+                val detailsMap = NetworkClient.steamApiService.getAppDetails(steamGame.id)
+                val appDetails = detailsMap[steamGame.id.toString()]?.takeIf { it.success }?.data
 
-            val gameEntity = GameEntity(
-                id = rawgGame.id,
-                name = rawgGame.name,
-                imageUrl = rawgGame.backgroundImage ?: "",
-                apiImageUrl = rawgGame.backgroundImage ?: "",
-                releaseDate = rawgGame.released,
-                genres = "$genre - $year",
-                status = "NONE",
-                isFavorite = false
-            )
-            gameDao.insertGame(gameEntity)
+                val genres = appDetails?.genres?.joinToString(", ") { it.description } ?: "Steam Game"
+                val releaseDate = appDetails?.releaseDate?.date
+                
+                // we can use the first screenshot as a fallback header
+                val headerImageUrl = appDetails?.screenshots?.firstOrNull()?.pathFull ?: steamGame.libraryHeroImage
+
+                val gameEntity = GameEntity(
+                    id = steamGame.id,
+                    name = appDetails?.name ?: steamGame.name,
+                    imageUrl = appDetails?.headerImage ?: steamGame.headerImage,
+                    apiImageUrl = appDetails?.headerImage ?: steamGame.headerImage,
+                    imageUrlAdditional = headerImageUrl,
+                    releaseDate = releaseDate,
+                    genres = genres,
+                    status = "NONE",
+                    isFavorite = false
+                )
+                gameDao.insertGame(gameEntity)
+            } catch (e: Exception) {
+                // fallback to basic info if details fetch fails
+                Log.d("Fetch", "Fall back to basic.")
+                val gameEntity = GameEntity(
+                    id = steamGame.id,
+                    name = steamGame.name,
+                    imageUrl = steamGame.headerImage,
+                    apiImageUrl = steamGame.headerImage,
+                    imageUrlAdditional = steamGame.libraryHeroImage,
+                    releaseDate = null,
+                    genres = "Steam Game",
+                    status = "NONE",
+                    isFavorite = false
+                )
+                gameDao.insertGame(gameEntity)
+            }
         }
     }
 }

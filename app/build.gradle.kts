@@ -25,8 +25,8 @@ android {
         if (localPropertiesFile.exists()) {
             localProperties.load(localPropertiesFile.inputStream())
         }
-        val rawgApiKey = localProperties.getProperty("RAWG_API_KEY") ?: ""
-        buildConfigField("String", "RAWG_API_KEY", "\"$rawgApiKey\"")
+        val steamApiKey = localProperties.getProperty("STEAM_API_KEY") ?: ""
+        buildConfigField("String", "STEAM_API_KEY", "\"$steamApiKey\"")
     }
 
     buildTypes {
