@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -36,7 +37,7 @@ class ChecklistEditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbarChecklistEditor.setNavigationOnClickListener {
-            findNavController().popBackStack()
+            handleBackNavigation()
         }
 
         binding.btnAddItem.setOnClickListener {
@@ -47,8 +48,23 @@ class ChecklistEditorFragment : Fragment() {
             saveChecklist()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackNavigation()
+            }
+        })
+
         observeViewModel()
         viewModel.loadNote(args.noteId)
+    }
+
+    private fun handleBackNavigation() {
+        val items = getChecklistItems()
+        if (items.isNotEmpty()) {
+            saveChecklist()
+        } else {
+            findNavController().popBackStack()
+        }
     }
 
     private fun addChecklistItem(text: String, isChecked: Boolean) {
@@ -62,10 +78,8 @@ class ChecklistEditorFragment : Fragment() {
         binding.checklistItemsContainer.addView(itemBinding.root, binding.checklistItemsContainer.childCount - 1)
     }
 
-    private fun saveChecklist() {
-        val title = binding.editChecklistTitle.text.toString().trim()
+    private fun getChecklistItems(): List<String> {
         val items = mutableListOf<String>()
-        
         for (i in 0 until binding.checklistItemsContainer.childCount - 1) {
             val view = binding.checklistItemsContainer.getChildAt(i)
             val itemBinding = ItemChecklistEditBinding.bind(view)
@@ -76,9 +90,17 @@ class ChecklistEditorFragment : Fragment() {
                 items.add("$isChecked|$text")
             }
         }
+        return items
+    }
+
+    private fun saveChecklist() {
+        val title = binding.editChecklistTitle.text.toString().trim()
+        val items = getChecklistItems()
 
         if (items.isEmpty()) {
-            Toast.makeText(requireContext(), "Checklist cannot be empty", Toast.LENGTH_SHORT).show()
+            if (findNavController().currentDestination?.id == com.example.assignment3.R.id.checklistEditorFragment) {
+                findNavController().popBackStack()
+            }
             return
         }
 

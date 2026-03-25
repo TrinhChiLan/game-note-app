@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
         binding.gamesRecyclerView.adapter = adapter
 
         binding.addGameFab.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            showAddGameMenu()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -72,6 +72,21 @@ class HomeFragment : Fragment() {
                 adapter.submitList(items)
             }
         }
+    }
+
+    private fun showAddGameMenu() {
+        val options = arrayOf(
+            getString(R.string.add_new_game),
+            getString(R.string.find_game_online)
+        )
+        AlertDialog.Builder(requireContext())
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> findNavController().navigate(R.id.action_homeFragment_to_addCustomGameFragment)
+                    1 -> findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+                }
+            }
+            .show()
     }
 
     private fun showGameOptionsDialog(game: com.example.assignment3.data.GameEntity) {

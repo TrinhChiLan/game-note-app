@@ -31,7 +31,7 @@
             android:layout_marginTop="8dp"
             android:orientation="vertical">
 
-            <!-- Checkbox items will be added programmatically here -->
+            <!-- Checkbox items will be added programmatically below -->
 
         </LinearLayout>
 

@@ -31,6 +31,6 @@
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:tint="@android:color/black" />
+        app:tint="?attr/colorOnSurface"/>
 
 </LinearLayout>

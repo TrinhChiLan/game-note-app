@@ -19,6 +19,8 @@
     <string name="change_header_image">Change Header Image</string>
     <string name="remove_thumbnail">Remove Thumbnail</string>
     <string name="remove_header_image">Remove Header Image</string>
+    <string name="add_new_game">Add new game</string>
+    <string name="find_game_online">Find game online</string>
 
     <!-- Search Screen -->
     <string name="add_game_title">Add Game</string>
@@ -26,9 +28,9 @@
     <string name="game_added_message">%1$s added!</string>
     <string name="in_library">In Library</string>
     <string name="add_custom_game">Add Custom Game</string>
+    <string name="offline">It seems that you\'re offline right now :(</string>
 
     <!-- Custom Game Screen -->
-    <string name="custom_game_title">Add Custom Game</string>
     <string name="game_name_hint">Game Name</string>
     <string name="thumbnail_label">Thumbnail</string>
     <string name="header_label">Header Image</string>

@@ -2,6 +2,7 @@ package com.example.assignment3.adapters
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.example.assignment3.data.NoteEntity
 import com.example.assignment3.databinding.ItemNoteChecklistBinding
 import com.example.assignment3.databinding.ItemNoteTextBinding
 import androidx.core.graphics.toColorInt
+import com.google.android.material.R as MaterialR
 
 class NotesAdapter(
     private val onNoteClick: (NoteEntity) -> Unit,
@@ -53,7 +55,12 @@ class NotesAdapter(
                 binding.noteTitle.text = note.title
             }
             binding.noteContent.text = note.content
-            binding.noteContent.setTextColor(Color.BLACK)
+            
+            // Resolve onSurface color from theme
+            val typedValue = TypedValue()
+            binding.root.context.theme.resolveAttribute(MaterialR.attr.colorOnSurface, typedValue, true)
+            binding.noteContent.setTextColor(typedValue.data)
+            
             binding.root.setOnClickListener { onClick(note) }
             binding.root.setOnLongClickListener {
                 onLongClick(note)
@@ -74,6 +81,11 @@ class NotesAdapter(
 
             binding.checklistItemsContainer.removeAllViews()
 
+            // Resolve onSurface color from theme
+            val typedValue = TypedValue()
+            binding.root.context.theme.resolveAttribute(MaterialR.attr.colorOnSurface, typedValue, true)
+            val onSurfaceColor = typedValue.data
+
             // Format: "checked|text"
             val lines = note.content.split("\n").filter { it.isNotBlank() }
             lines.forEach { line ->
@@ -86,7 +98,7 @@ class NotesAdapter(
                     this.isChecked = isChecked
                     this.isEnabled = true
                     this.isClickable = false
-                    this.setTextColor(Color.BLACK)
+                                                                                                                                                    this.setTextColor(onSurfaceColor)
                     
                     // Set color for the checkbox tint to make it more visible
                     val colorStateList = ColorStateList(
