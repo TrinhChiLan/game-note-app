@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -36,16 +39,11 @@ class ChecklistEditorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarChecklistEditor.setNavigationOnClickListener {
-            handleBackNavigation()
-        }
+        setupToolbar()
+        setupEdgeToEdge()
 
         binding.btnAddItem.setOnClickListener {
             addChecklistItem("", false)
-        }
-
-        binding.saveChecklistFab.setOnClickListener {
-            saveChecklist()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -56,6 +54,25 @@ class ChecklistEditorFragment : Fragment() {
 
         observeViewModel()
         viewModel.loadNote(args.noteId)
+    }
+
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            
+            // Apply padding to root to physically resize the view
+            v.updatePadding(
+                bottom = bars.bottom.coerceAtLeast(ime.bottom)
+            )
+            insets
+        }
+    }
+
+    private fun setupToolbar() {
+        binding.toolbarChecklistEditor.setNavigationOnClickListener {
+            handleBackNavigation()
+        }
     }
 
     private fun handleBackNavigation() {
@@ -74,7 +91,6 @@ class ChecklistEditorFragment : Fragment() {
         itemBinding.btnRemoveItem.setOnClickListener {
             binding.checklistItemsContainer.removeView(itemBinding.root)
         }
-        // Add before the "Add Item" button
         binding.checklistItemsContainer.addView(itemBinding.root, binding.checklistItemsContainer.childCount - 1)
     }
 
@@ -86,7 +102,6 @@ class ChecklistEditorFragment : Fragment() {
             val text = itemBinding.editItemText.text.toString().trim()
             val isChecked = itemBinding.checkItem.isChecked
             if (text.isNotEmpty()) {
-                // Save as "checked|text"
                 items.add("$isChecked|$text")
             }
         }
@@ -114,7 +129,6 @@ class ChecklistEditorFragment : Fragment() {
                     is NoteEditorState.Success -> {
                         state.note?.let { note ->
                             binding.editChecklistTitle.setText(note.title)
-                            // Clear existing items except the add button
                             while (binding.checklistItemsContainer.childCount > 1) {
                                 binding.checklistItemsContainer.removeViewAt(0)
                             }
@@ -130,7 +144,7 @@ class ChecklistEditorFragment : Fragment() {
                             }
                         }
                         if (state.note == null && binding.checklistItemsContainer.childCount == 1) {
-                            addChecklistItem("", false) // Add one empty item for new checklist
+                            addChecklistItem("", false)
                         }
                     }
                     is NoteEditorState.Saved -> {

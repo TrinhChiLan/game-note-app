@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -55,6 +58,8 @@ class AddCustomGameFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupEdgeToEdge()
+
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -77,6 +82,18 @@ class AddCustomGameFragment : Fragment() {
 
         binding.saveButton.setOnClickListener {
             saveGame()
+        }
+    }
+
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // Apply padding to root to physically resize the view
+            v.updatePadding(
+                bottom = bars.top
+            )
+            insets
         }
     }
 

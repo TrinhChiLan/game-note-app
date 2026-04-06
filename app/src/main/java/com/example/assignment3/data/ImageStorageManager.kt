@@ -29,9 +29,7 @@ object ImageStorageManager {
         if (path == null) return
         try {
             val file = File(path)
-            if (file.exists() && file.absolutePath.startsWith(file.parent ?: "")) {
-                // Basic check to ensure we are in the right directory if needed, 
-                // but since we control the paths it's mostly fine.
+            if (file.exists() && file.absolutePath.startsWith(file.parent ?: "")) { // Basic check to ensure we are in the right directory
                 file.delete()
             }
         } catch (e: Exception) {

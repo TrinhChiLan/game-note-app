@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -53,6 +56,8 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupEdgeToEdge()
+
         val notesAdapter = NotesAdapter(
             onNoteClick = { note ->
                 if (note.type == "CHECKLIST") {
@@ -96,7 +101,6 @@ class DetailFragment : Fragment() {
                         targetGame = game
                         binding.detailGameName.text = game.name
 
-                        // Use additional image if available, else fallback to main image
                         val displayImageUrl =  game.imageUrlAdditional ?: game.imageUrl
                         binding.detailImage.load(displayImageUrl) {
                             crossfade(true)
@@ -104,7 +108,6 @@ class DetailFragment : Fragment() {
                             error(android.R.drawable.ic_menu_report_image)
                         }
                         
-                        // Favorite button logic
                         if (game.isFavorite) {
                             binding.favoriteButton.setImageResource(R.drawable.baseline_favorite_24)
                             binding.favoriteButton.clearColorFilter()
@@ -117,15 +120,12 @@ class DetailFragment : Fragment() {
                             viewModel.toggleFavorite(game)
                         }
 
-                        // Options button logic
                         binding.optionsButton.setOnClickListener {
                             showGameOptionsDialog(game)
                         }
 
-                        // Handle Status Pill UI
                         updateStatusPill(game.status)
 
-                        // Pill Click Listener
                         binding.statusContainer.setOnClickListener {
                             showStatusSelectionDialog(game)
                         }
@@ -142,6 +142,22 @@ class DetailFragment : Fragment() {
         viewModel.loadGameDetails(args.gameId)
     }
 
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Add bottom padding to the ScrollView container so content is visible above the transparent nav bar
+            binding.detailScrollView.updatePadding(bottom = systemBars.bottom)
+            
+            // Adjust FAB margin
+            val fabParams = binding.addNoteFab.layoutParams as ViewGroup.MarginLayoutParams
+            fabParams.bottomMargin = systemBars.bottom + (24 * resources.displayMetrics.density).toInt()
+            binding.addNoteFab.layoutParams = fabParams
+
+            insets
+        }
+    }
+
     private fun showGameOptionsDialog(game: com.example.assignment3.data.GameEntity) {
         val favoriteText = if (game.isFavorite) getString(R.string.unfavorite) else getString(R.string.favorite)
         
@@ -151,7 +167,6 @@ class DetailFragment : Fragment() {
             getString(R.string.change_header_image)
         )
         
-        // Add remove options only if custom images exist
         if (game.imageUrl != game.apiImageUrl) {
             optionsList.add(getString(R.string.remove_thumbnail))
         }

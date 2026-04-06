@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +43,7 @@ class NoteEditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setupSaveButton()
+        setupEdgeToEdge()
         observeViewModel()
         setupBackNavigation()
 
@@ -48,15 +51,22 @@ class NoteEditorFragment : Fragment() {
         viewModel.loadNote(args.noteId)
     }
 
-    private fun setupToolbar() {
-        binding.toolbarNoteEditor.setNavigationOnClickListener {
-            handleBackNavigation()
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            v.updatePadding(
+                bottom = bars.bottom.coerceAtLeast(ime.bottom)
+            )
+
+            insets
         }
     }
 
-    private fun setupSaveButton() {
-        binding.saveNoteFab.setOnClickListener {
-            performSave()
+    private fun setupToolbar() {
+        binding.toolbarNoteEditor.setNavigationOnClickListener {
+            handleBackNavigation()
         }
     }
 
@@ -102,7 +112,6 @@ class NoteEditorFragment : Fragment() {
                         state.note?.let { note ->
                             binding.editNoteTitle.setText(note.title)
                             binding.editNoteContent.setText(note.content)
-                            // Note: We don't change type here as this editor is strictly for TEXT notes now
                         }
                     }
                     is NoteEditorState.Saved -> {

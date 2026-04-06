@@ -66,7 +66,7 @@ class SearchFragment : Fragment() {
 
         val adapter = SearchAdapter { clickedGame ->
             viewModel.saveGame(clickedGame)
-            Toast.makeText(requireContext(), getString(R.string.game_added_message, clickedGame.name), Toast.LENGTH_SHORT).show()
+            //Toast.makeText(requireContext(), getString(R.string.game_added_message, clickedGame.name), Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
         }
 

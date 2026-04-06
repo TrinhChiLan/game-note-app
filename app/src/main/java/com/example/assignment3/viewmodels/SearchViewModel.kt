@@ -13,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import kotlin.collections.map
 
 sealed class SearchState {
     object Idle : SearchState()

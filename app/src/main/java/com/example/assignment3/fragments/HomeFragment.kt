@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +50,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupEdgeToEdge()
+
         val adapter = HomeAdapter(
             onSearchQueryChanged = { query ->
                 viewModel.setSearchQuery(query)
@@ -71,6 +76,23 @@ class HomeFragment : Fragment() {
             viewModel.homeItems.collect { items ->
                 adapter.submitList(items)
             }
+        }
+    }
+
+    private fun setupEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply bottom padding to the RecyclerView so content is not hidden by the transparent nav bar
+            // clipToPadding="false" in XML so the content scrolls UNDER the bar but ends ABOVE it.
+            binding.gamesRecyclerView.updatePadding(bottom = systemBars.bottom)
+            
+            // Adjust FAB margin to stay above the nav bar
+            val fabParams = binding.addGameFab.layoutParams as ViewGroup.MarginLayoutParams
+            fabParams.bottomMargin = systemBars.bottom + (24 * resources.displayMetrics.density).toInt()
+            binding.addGameFab.layoutParams = fabParams
+
+            insets
         }
     }
 
