@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/layout_settings">
+        <menu>
+            <item
+                android:id="@+id/nav_toggle_layout"
+                android:title="@string/use_tall_card"
+                app:actionViewClass="androidx.appcompat.widget.SwitchCompat"
+                app:showAsAction="always" />
+        </menu>
+    </item>
+
+</menu>

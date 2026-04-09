@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.assignment3.R
 import com.example.assignment3.adapters.HomeAdapter
+import com.example.assignment3.data.SettingsManager
 import com.example.assignment3.databinding.FragmentHomeBinding
 import com.example.assignment3.viewmodels.HomeViewModel
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val viewModel: HomeViewModel by viewModels()
+    private lateinit var settingsManager: SettingsManager
 
     private var targetGame: com.example.assignment3.data.GameEntity? = null
     private var isHeaderPicker = false
@@ -50,6 +52,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        settingsManager = SettingsManager.getInstance(requireContext())
         setupEdgeToEdge()
 
         val adapter = HomeAdapter(
@@ -77,21 +80,21 @@ class HomeFragment : Fragment() {
                 adapter.submitList(items)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            settingsManager.isTallLayout.collect { isTall ->
+                adapter.setUseTallLayout(isTall)
+            }
+        }
     }
 
     private fun setupEdgeToEdge() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            
-            // Apply bottom padding to the RecyclerView so content is not hidden by the transparent nav bar
-            // clipToPadding="false" in XML so the content scrolls UNDER the bar but ends ABOVE it.
             binding.gamesRecyclerView.updatePadding(bottom = systemBars.bottom)
-            
-            // Adjust FAB margin to stay above the nav bar
             val fabParams = binding.addGameFab.layoutParams as ViewGroup.MarginLayoutParams
             fabParams.bottomMargin = systemBars.bottom + (24 * resources.displayMetrics.density).toInt()
             binding.addGameFab.layoutParams = fabParams
-
             insets
         }
     }

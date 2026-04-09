@@ -15,7 +15,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface GameDao {
+interface GameDao { //data access object
     @Query("SELECT * FROM games")
     fun getAllGames(): Flow<List<GameEntity>>
 

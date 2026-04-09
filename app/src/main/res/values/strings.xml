@@ -57,4 +57,8 @@
     <string name="edit_checklist_title">Edit Checklist</string>
     <string name="add_item">+ Add Item</string>
     <string name="save_checklist">Save Checklist</string>
+
+    <!-- Navigation Drawer -->
+    <string name="layout_settings">Layout Settings</string>
+    <string name="use_tall_card">Tall Card</string>
 </resources>
